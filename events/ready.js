@@ -1,5 +1,4 @@
 const { ActivityType } = require("discord.js");
-const path = require("node:path");
 
 module.exports = {
   name: "ready",

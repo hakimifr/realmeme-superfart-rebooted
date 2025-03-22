@@ -3,65 +3,76 @@ const { SlashCommandBuilder } = require("discord.js");
 module.exports = {
   data: new SlashCommandBuilder()
     .setName("unlockmtk")
-    .setDescription(
-      "Gives you information about how you can unlock bootloader for MTK chipset devices."
+    .setDescription("Gives you information about how you can unlock bootloader for MTK chipset devices.")
+    .addStringOption((option) =>
+      option
+        .setName("os")
+        .setDescription("Select your operating system!")
+        .addChoices({ name: "Microsoft Windows", value: "windows" })
+        .addChoices({ name: "Apple macOS", value: "macos" })
+        .addChoices({ name: "Linux", value: "linux" })
+        .setRequired(true)
     ),
   async execute(interaction) {
+    let choice = interaction.options.getString("os");
+    let osName;
+    let steps;
+    if (choice === "windows") {
+      osName = "Windows";
+      steps = [
+        "1. Install [Python](https://www.python.org/downloads/windows)",
+        "2. Install [Git SCM](https://git-scm.com/download/win) (Optional)",
+        "3. Install [UsbDk](https://github.com/daynix/UsbDk/releases)",
+        "4. Open Command Prompt",
+        "5. Execute the following commands:",
+        "```git clone https://github.com/bkerler/mtkclient.git```",
+        "**OR** download from [GitHub](https://github.com/bkerler/mtkclient/archive/refs/tags/2.0.1.zip)",
+        "```cd mtkclient```",
+        "```pip3 install -r requirements.txt```",
+        "```py mtk da seccfg unlock```",
+        "6. Connect your device in BROM mode by holding down both volume buttons and connect the USB cable",
+      ];
+    } else if (choice === "macos") {
+      osName = "macOS";
+      steps = [
+        "1. Open Terminal",
+        "2. Execute the following commands:",
+        "```brew install python3 git libusb``` (Git is optional)",
+        "```git clone https://github.com/bkerler/mtkclient.git```",
+        "**OR** download from [GitHub](https://github.com/bkerler/mtkclient/archive/refs/tags/2.0.1.zip)",
+        "```cd mtkclient```",
+        "```pip3 install -r requirements.txt```",
+        "```python3 setup.py build```",
+        "```python3 setup.py install```",
+        "```py mtk da seccfg unlock```",
+        "3. Connect your device in BROM mode by holding down both volume buttons and connect the USB cable",
+      ];
+    } else if (choice === "linux") {
+      osName = "Linux";
+      steps = [
+        "Note: As for now, the tutorial is only available for Debian-based Linux distributions.",
+        "1. Open Command Prompt",
+        "2. Execute the following commands:",
+        "```sudo apt install python3 git libusb-1.0-0 python3-pip``` (Git is optional)",
+        "```git clone https://github.com/bkerler/mtkclient.git```",
+        "**OR** download from [GitHub](https://github.com/bkerler/mtkclient/archive/refs/tags/2.0.1.zip)",
+        "```cd mtkclient```",
+        "```pip3 install -r requirements.txt```",
+        "```python3 setup.py build```",
+        "```python3 setup.py install```",
+        "```py mtk da seccfg unlock```",
+        "3. Connect your device in BROM mode by holding down both volume buttons and connect the USB cable",
+      ];
+    }
     interaction.reply({
       embeds: [
         {
           color: 0xffc916,
-          title: "MTK Bootloader Unlock",
-          description:
-            "Have fun unlocking bootloader! \n *(Disclaimer: I'm not responsible for your issues, please unlock carefully.)*",
-          fields: [
-            {
-              name: "For Windows users",
-              value: [
-                "1. Install [Python](https://www.python.org/downloads/windows)",
-                "2. Install [Git SCM](https://git-scm.com/download/win) (Optional)",
-                "3. Install [UsbDk](https://github.com/daynix/UsbDk/releases)",
-                "4. Open Command Prompt",
-                "5. Execute the following commands:",
-                "```\ngit clone https://github.com/bkerler/mtkclient.git\n**OR**\nDownload from (https://github.com/bkerler/mtkclient/archive/refs/tags/1.52.zip)[github]\n```",
-                "```\ncd mtkclient\n```",
-                "```\npip3 install -r requirements.txt\n```",
-                "```\npy mtk da seccfg unlock\n```",
-                "6. Connect your device in BROM mode by holding down both volume buttons and connect the USB cable",
-              ].join("\n"),
-            },
-            {
-              name: "For Linux users (Ubuntu's recommended as author said)",
-              value: [
-                "*(Note: I will only provide how to install for Ubuntu as for now)*",
-                "1. Open Command Prompt",
-                "2. Execute the following commands:",
-                "```\nsudo apt install python3 git libusb-1.0-0 python3-pip\n``` (Git is optional)",
-                "```\ngit clone https://github.com/bkerler/mtkclient.git\n**OR**\nDownload from (https://github.com/bkerler/mtkclient/archive/refs/tags/1.52.zip)[github]\n```",
-                "```\ncd mtkclient\n```",
-                "```\npip3 install -r requirements.txt\n```",
-                "```\npython3 setup.py build\n```",
-                "```\npython3 setup.py install\n```",
-                "```\npy mtk da seccfg unlock\n```",
-                "3. Connect your device in BROM mode by holding down both volume buttons and connect the USB cable",
-              ].join("\n"),
-            },
-            {
-              name: "For macOS users",
-              value: [
-                "1. Open Terminal",
-                "5. Execute the following commands:",
-                "```\nbrew install python3 git libusb\n``` (Git is optional)",
-                "```\ngit clone https://github.com/bkerler/mtkclient.git\n**OR**\nDownload from (https://github.com/bkerler/mtkclient/archive/refs/tags/1.52.zip)[github]\n```",
-                "```\ncd mtkclient\n```",
-                "```\npip3 install -r requirements.txt\n```",
-                "```\npython3 setup.py build\n```",
-                "```\npython3 setup.py install\n```",
-                "```\npy mtk da seccfg unlock\n```",
-                "6. Connect your device in BROM mode by holding down both volume buttons and connect the USB cable",
-              ].join("\n"),
-            },
-          ],
+          title: `How to Unlock Bootloader with MTKClient on ${osName}`,
+          description: ["Here's how you can unlock your bootloader using MTKClient.", steps.join("\n")].join("\n"),
+          footer: {
+            text: "*Disclaimer: I'm not responsible for your issues, please unlock carefully.*",
+          },
         },
       ],
     });

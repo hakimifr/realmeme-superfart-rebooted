@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, PermissionFlagsBits } = require("discord.js");
+const { SlashCommandBuilder, PermissionFlagsBits, MessageFlags } = require("discord.js");
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -17,7 +17,7 @@ module.exports = {
             description: "Only the bot developer can perform this action!",
           },
         ],
-        ephemeral: true,
+        flags: MessageFlags.Ephemeral,
       });
     await interaction.reply({
       embeds: [
@@ -27,7 +27,7 @@ module.exports = {
           description: "Bot is now reloading.",
         },
       ],
-      ephemeral: true,
+      flags: MessageFlags.Ephemeral,
     });
     await client.destroy();
     return process.exit(0);

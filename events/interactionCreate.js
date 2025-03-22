@@ -1,6 +1,9 @@
+// Interaction (Slash Commands) Handler
+
+const { MessageFlags } = require("discord.js");
 module.exports = {
   name: "interactionCreate",
-  async execute(interaction, client) {
+  async execute(interaction) {
     const command = interaction.client.commands.get(interaction.commandName);
     if (!interaction.isChatInputCommand()) return;
     if (!interaction.guild) {
@@ -23,7 +26,7 @@ module.exports = {
           },
         ],
         content: "",
-        ephemeral: true,
+        flags: MessageFlags.Ephemeral,
       });
     }
   },

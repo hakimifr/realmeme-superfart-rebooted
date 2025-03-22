@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, PermissionFlagsBits } = require("discord.js");
+const { SlashCommandBuilder, PermissionFlagsBits, MessageFlags } = require("discord.js");
 const ms = require("ms");
 const rules = require("../misc/rules.json");
 
@@ -61,7 +61,7 @@ module.exports = {
             timestamp: new Date().toISOString(),
           },
         ],
-        ephemeral: true,
+        flags: MessageFlags.Ephemeral,
       });
 
     if (member.user.id === client.user.id)
@@ -69,10 +69,10 @@ module.exports = {
         embeds: [
           {
             color: 0xf04a47,
-            description: "<:botError:1279326378075885599> bruh can you even timeout a discord bot...",
+            description: "<:botError:1279326378075885599> bruh why are you trying to timeout a discord bot",
           },
         ],
-        ephemeral: true,
+        flags: MessageFlags.Ephemeral,
       });
 
     if (interaction.member.roles.highest.position <= member.roles.highest.position)
@@ -83,7 +83,7 @@ module.exports = {
             description: "<:botError:1279326378075885599> You can't timeout someone with a role higher than yours",
           },
         ],
-        ephemeral: true,
+        flags: MessageFlags.Ephemeral,
       });
 
     if (!time)
@@ -94,7 +94,7 @@ module.exports = {
             description: "<:botError:1279326378075885599> The time you provided is not valid",
           },
         ],
-        ephemeral: true,
+        flags: MessageFlags.Ephemeral,
       });
 
     await interaction.reply({
@@ -105,23 +105,19 @@ module.exports = {
         },
       ],
     });
-    await user
-      .send({
-        embeds: [
-          {
-            color: 0xf04a47,
-            description: `You were timed out from ${guild.name} for ${reason}`,
-          },
-          {
-            color: 0xffc916,
-            title: rules[rule].name,
-            description: rules[rule].description,
-          },
-        ],
-      })
-      .catch((error) => {
-        console.error(`Could not send DM to ${interaction.author.tag}.\n`, error);
-      });
+    await user.send({
+      embeds: [
+        {
+          color: 0xf04a47,
+          description: `You were timed out from ${guild.name} for ${reason}`,
+        },
+        {
+          color: 0xffc916,
+          title: rules[rule].name,
+          description: rules[rule].description,
+        },
+      ],
+    });
     await member.timeout(time, reason);
   },
 };

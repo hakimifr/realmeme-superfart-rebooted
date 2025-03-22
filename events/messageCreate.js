@@ -1,9 +1,18 @@
+// Message Handler
+
+const { ChannelType } = require("discord.js");
+const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 module.exports = {
   name: "messageCreate",
   async execute(message) {
+    // Ignore messages from bots
     if (message.author.bot) return;
+
+    // Auto Ping Responder
     if (message.content.includes("<@979758930374819910>")) {
-      message.reply({
+      await message.channel.sendTyping();
+      await delay(1000);
+      await message.reply({
         embeds: [
           {
             color: 0xffc916,
@@ -21,13 +30,22 @@ module.exports = {
       });
     }
 
+    // No DMs Responder
+    if (message.channel.type === ChannelType.DM) {
+      await message.channel.sendTyping();
+      await delay(1000);
+      await message.reply(
+        "This bot only intends to work for r/realme, not in DMs.\nPlease use the bot in the server: https://discord.gg/5D6UPMTdjy"
+      );
+    }
+
     // Auto Moo Responder
 
     if (message.content.trim().toLowerCase() === "moo") {
-      message.react('🐮');
+      message.react("🐮");
     }
 
-    // Credits to @dumpydev for this (this is a joke btw, but the code does actually work)
+    // Credits to @flandolf for this (this is a joke btw, but the code supposedly works)
     // realme Spell Check Blamer Pro+ Ultra Master Edition
 
     // if (

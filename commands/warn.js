@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, PermissionFlagsBits } = require("discord.js");
+const { SlashCommandBuilder, PermissionFlagsBits, InteractionContextType, MessageFlags } = require("discord.js");
 const rules = require("../misc/rules.json");
 
 module.exports = {
@@ -6,7 +6,7 @@ module.exports = {
     .setName("warn")
     .setDescription("Warns the user in the server.")
     .setDefaultMemberPermissions(PermissionFlagsBits.ModerateMembers)
-    .setDMPermission(false)
+    .setContexts(InteractionContextType.Guild)
     .addUserOption((option) =>
       option
         .setName("user")
@@ -67,7 +67,7 @@ module.exports = {
             description: "<:botError:1279326378075885599> Couldn't get details from the given user input",
           },
         ],
-        ephemeral: true,
+        flags: MessageFlags.Ephemeral,
       });
 
     if (member.user.id === client.user.id)
@@ -78,7 +78,7 @@ module.exports = {
             description: "<:botError:1279326378075885599> HEY DON'T WARN ME!!!!111!!11",
           },
         ],
-        ephemeral: true,
+        flags: MessageFlags.Ephemeral,
       });
 
     if (
@@ -92,7 +92,7 @@ module.exports = {
               "<:botError:1279326378075885599> You can't warn someone with a role higher than yours",
           },
         ],
-        ephemeral: true,
+        flags: MessageFlags.Ephemeral,
       });
     await interaction.reply({
       embeds: [
