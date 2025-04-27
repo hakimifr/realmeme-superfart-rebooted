@@ -13,7 +13,7 @@ module.exports = {
           description: "Here's a great software for you to debloat with!",
           fields: [
             {
-              name: "[Universal Android Debloater GUI](https://github.com/0x192/universal-android-debloater/)",
+              name: "Universal Android Debloater GUI",
               value: [
                 "1. Install Platform Tools",
                 "2. Download the software [Universal Android Debloater GUI](https://github.com/0x192/universal-android-debloater/releases)",
