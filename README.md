@@ -1,6 +1,6 @@
 # realmeme SuperFART Rebooted
 
-This is a community Discord bot project based on the repo [davwheat/realmeme-superfart-discord-bot](https://github.com/codacy-badger/realmeme-superfart-discord-bot) (now deleted), and was re-coded based on the repo [hackerman14/bot-codes](https://github.com/hackerman14/bot-codes), although not all commands remain the same or still exists, but I'll try my best to make all commands alive again in a form of slash commands.
+This is a community-driven Discord bot project, originally inspired by the (now deleted) davwheat/realmeme-superfart-discord-bot repository. The current codebase has been restructured and rewritten based on [hackerman14/bot-codes](https://github.com/hackerman14/bot-codes). While some original features have changed or been removed, I am actively working to restore and modernize all previous commands as Slash Commands to ensure a better user experience.
 
 ## Self Hosting
 
