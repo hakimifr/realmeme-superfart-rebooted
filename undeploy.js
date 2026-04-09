@@ -1,21 +1,21 @@
 const fs = require("node:fs");
 const { REST, Routes } = require("discord.js");
-require("dotenv").config();
+require("dotenv").config({ quiet: true });
 
 const commands = [];
 const commandFiles = fs
   .readdirSync("./commands")
   .filter((file) => file.endsWith(".js"));
 
-const clientId = process.env.CLIENTID;
-const guildId = process.env.GUILDID;
+const clientId = process.env.CLIENT_ID;
+const guildId = process.env.GUILD_ID;
 
 for (const file of commandFiles) {
   const command = require(`./commands/${file}`);
   commands.push(command.data.toJSON());
 }
 
-const rest = new REST({ version: "9" }).setToken(process.env.DISCORD);
+const rest = new REST().setToken(process.env.DISCORD_BOT_TOKEN);
 
 // This will only remove guild commands, since guild commands can create duplicated commands in the specified guild.
 
@@ -30,7 +30,7 @@ const rest = new REST({ version: "9" }).setToken(process.env.DISCORD);
         for (const command of data) {
           const deleteUrl = `${Routes.applicationGuildCommands(
             clientId,
-            guildId
+            guildId,
           )}/${command.id}`;
           promises.push(rest.delete(deleteUrl));
         }

@@ -1,8 +1,9 @@
 // Interaction (Slash Commands) Handler
 
-const { MessageFlags } = require("discord.js");
+const { Events, MessageFlags } = require("discord.js");
+
 module.exports = {
-  name: "interactionCreate",
+  name: Events.InteractionCreate,
   async execute(interaction) {
     const command = interaction.client.commands.get(interaction.commandName);
     if (!interaction.isChatInputCommand()) return;

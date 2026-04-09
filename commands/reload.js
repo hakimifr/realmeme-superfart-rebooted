@@ -8,7 +8,7 @@ module.exports = {
   async execute(interaction) {
     const { client } = interaction;
     console.log(interaction.user.id);
-    if (interaction.user.id !== process.env.OWNERID)
+    if (interaction.user.id !== process.env.OWNER_ID)
       return interaction.reply({
         embeds: [
           {

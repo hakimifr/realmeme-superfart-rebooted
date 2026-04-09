@@ -1,4 +1,9 @@
-const { SlashCommandBuilder, PermissionFlagsBits, InteractionContextType, MessageFlags } = require("discord.js");
+const {
+  SlashCommandBuilder,
+  PermissionFlagsBits,
+  InteractionContextType,
+  MessageFlags,
+} = require("discord.js");
 const rules = require("../misc/rules.json");
 
 module.exports = {
@@ -11,7 +16,7 @@ module.exports = {
       option
         .setName("user")
         .setDescription("The user you want to warn")
-        .setRequired(true)
+        .setRequired(true),
     )
     .addStringOption((option) =>
       option
@@ -35,12 +40,12 @@ module.exports = {
           value: "rule14",
         })
         .addChoices({ name: "Rule 15 - Other", value: "rule15" })
-        .setRequired(true)
+        .setRequired(true),
     )
     .addStringOption((option) =>
       option
         .setName("details")
-        .setDescription("Add details to the kick if necessary")
+        .setDescription("Add details to the kick if necessary"),
     ),
 
   async execute(interaction) {
@@ -64,7 +69,8 @@ module.exports = {
         embeds: [
           {
             color: 0xf04a47,
-            description: "<:botError:1279326378075885599> Couldn't get details from the given user input",
+            description:
+              "<:botError:1279326378075885599> Couldn't get details from the given user input",
           },
         ],
         flags: MessageFlags.Ephemeral,
@@ -75,7 +81,8 @@ module.exports = {
         embeds: [
           {
             color: 0xf04a47,
-            description: "<:botError:1279326378075885599> HEY DON'T WARN ME!!!!111!!11",
+            description:
+              "<:botError:1279326378075885599> HEY DON'T WARN ME!!!!111!!11",
           },
         ],
         flags: MessageFlags.Ephemeral,

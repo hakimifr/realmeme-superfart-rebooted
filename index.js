@@ -19,7 +19,7 @@ const client = new Client({
   ],
   partials: [Partials.Message, Partials.Channel, Partials.Reaction],
 });
-require("dotenv").config({ path: path.resolve(__dirname, '.env') });
+require("dotenv").config({ path: path.resolve(__dirname, '.env'), quiet: true });
 
 // Commands Handler
 
@@ -60,4 +60,4 @@ for (const file of eventFiles) {
   }
 }
 
-client.login(process.env.DISCORD);
+client.login(process.env.DISCORD_BOT_TOKEN);

@@ -1,21 +1,19 @@
 const { SlashCommandBuilder } = require("discord.js");
 const {
+  AudioPlayerStatus,
   createAudioPlayer,
   createAudioResource,
   joinVoiceChannel,
-  AudioPlayerStatus,
 } = require("@discordjs/voice");
 
 module.exports = {
   data: new SlashCommandBuilder()
     .setName("ltt")
     .setDescription(
-      "This command is sponsored by *insert sponsorship name here*."
+      "This command is sponsored by *insert sponsorship name here*.",
     )
     .addStringOption((option) =>
-      option
-        .setName("sponsor")
-        .setDescription("Name your sponsor.")
+      option.setName("sponsor").setDescription("Name your sponsor."),
     ),
   async execute(interaction) {
     let sponsor = interaction.options.getString("sponsor");
