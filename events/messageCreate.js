@@ -1,7 +1,8 @@
 // Message Handler
 
-const { ChannelType, Events } = require("discord.js");
+const { ChannelType, Events, PermissionFlagsBits } = require("discord.js");
 const { GoogleGenAI, ThinkingLevel } = require("@google/genai");
+const rules = require("../misc/rules.json");
 
 const ai = new GoogleGenAI({
   apiKey: process.env.GOOGLE_AI_STUDIO_API_KEY,
@@ -29,6 +30,65 @@ module.exports = {
   async execute(message) {
     // Ignore messages from bots
     if (message.author.bot) return;
+
+    // Honeypot Trap for Auto Spam Bots
+    if (message.channel.id === "1515789716291719340") {
+      let details =
+        "You sent a message in the honeypot channel, so we assumed you were a bot.";
+      let reason = rules["rule4"].name + ": " + details;
+
+      if (
+        !message.member?.permissions.has(PermissionFlagsBits.ModerateMembers)
+      ) {
+        await message.author
+          .send({
+            embeds: [
+              {
+                color: 0xf04a47,
+                description: `You were banned from ${message.guild.name} | ${reason}`,
+              },
+              {
+                color: 0xffc916,
+                title: rules["rule4"].name,
+                description: rules["rule4"].description,
+              },
+              {
+                color: 0xffc916,
+                description:
+                  "Appeal the ban: <https://forms.gle/nUdK1PsqJx1Lwtq56>",
+              },
+            ],
+          })
+          .catch((error) => {
+            console.error(error);
+          });
+        await message.client.channels.cache.get("1001166932407496754").send({
+          embeds: [
+            {
+              color: 0xf04a47,
+              title: "Punishment System",
+              description: `${message.author.tag} was banned.`,
+              fields: [
+                {
+                  name: "Rule Violated",
+                  value: rules["rule4"].name,
+                },
+                {
+                  name: "Rule Description",
+                  value: rules["rule4"].description,
+                },
+                {
+                  name: "Additional Details",
+                  value: details || "N/A",
+                },
+              ],
+            },
+          ],
+        });
+        await message.delete().catch((error) => console.error(error));
+        await message.member.ban({ reason: reason });
+      }
+    }
 
     // Auto Ping Responder
     if (message.mentions.has(process.env.CLIENT_ID)) {
@@ -126,7 +186,7 @@ module.exports = {
                   - Normal Human: Talk like a regular person. Avoid "AI assistant" fluff (e.g., "I'm happy to help" or "As an AI model..."). Be chill and direct.
                   - Discord Energy: Keep answers concise and straight to the point. No yapping or unnecessary essays.        
                   - Handling Humor: This server jokes a lot. If a prompt is a joke or technically "edgy" but clearly trolling, don't give a moral lecture. Take it casually and play along with a witty or blunt response.
-                  - Identity: If asked who you are, provide a specific and honest self-introduction. You are SuperFART, powered by Gemma 4 26B A4B IT, an open-weights AI model developed by Google. Do not just say "I am an AI"; be precise about your version and origin.
+                  - Identity: If asked who you are, provide a specific and honest self-introduction. You are SuperFART, powered by Gemma 4 26B A4B IT, an open-weights AI model developed by Google DeepMind. Do not just say "I am an AI"; be precise about your version and origin.
           
                   Technical Guidelines:
                   - Straight to the Point: For technical help, provide the solution immediately. Only explain "why" or "how" if specifically asked.
