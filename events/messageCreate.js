@@ -256,6 +256,8 @@ module.exports = {
 
     if (message.content.trim().toLowerCase() === "moo") {
       message.react("🐮");
+    } else if (message.content.trim().toLowerCase() == "meow") {
+      message.react("🐱");
     }
 
     // Credits to @flandolf for this (this is a joke btw, but the code supposedly works)
