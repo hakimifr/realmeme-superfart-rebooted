@@ -15,11 +15,18 @@ const client = new Client({
     GatewayIntentBits.GuildVoiceStates,
     GatewayIntentBits.DirectMessages,
     GatewayIntentBits.DirectMessageTyping,
-		GatewayIntentBits.MessageContent,
+    GatewayIntentBits.MessageContent,
   ],
   partials: [Partials.Message, Partials.Channel, Partials.Reaction],
+  allowedMentions: {
+    parse: ["users", "roles"],
+    repliedUser: true,
+  },
 });
-require("dotenv").config({ path: path.resolve(__dirname, '.env'), quiet: true });
+require("dotenv").config({
+  path: path.resolve(__dirname, ".env"),
+  quiet: true,
+});
 
 // Commands Handler
 
@@ -38,7 +45,32 @@ for (const file of commandFiles) {
     client.commands.set(command.data.name, command);
   } else {
     console.log(
-      `[WARNING] The command at ${filePath} is missing a required "data" or "execute" property.`
+      `[WARNING] The command at ${filePath} is missing a required "data" or "execute" property.`,
+    );
+  }
+}
+
+// Messages Handler
+
+client.messages = new Collection();
+
+const messagesPath = path.join(__dirname, "messages");
+const messageFiles = fs
+  .readdirSync(messagesPath)
+  .filter((file) => file.endsWith(".js"));
+
+for (const file of messageFiles) {
+  const filePath = path.join(messagesPath, file);
+  const handler = require(filePath);
+
+  if (
+    typeof handler.match === "function" &&
+    typeof handler.execute === "function"
+  ) {
+    client.messages.set(file, handler);
+  } else {
+    console.warn(
+      `[WARNING] The message handler at ${filePath} is missing a required "match" or "execute" function.`,
     );
   }
 }
@@ -59,5 +91,10 @@ for (const file of eventFiles) {
     client.on(event.name, (...args) => event.execute(...args));
   }
 }
+
+console.log("Ready event listeners:", {
+  ready: client.listenerCount("ready"),
+  clientReady: client.listenerCount("clientReady"),
+});
 
 client.login(process.env.DISCORD_BOT_TOKEN);

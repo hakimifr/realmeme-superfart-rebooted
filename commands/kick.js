@@ -131,7 +131,7 @@ module.exports = {
         console.error(error);
       });
     await member.kick({ reason: reason });
-    await client.channels.cache.get("1001166932407496754").send({
+    await client.channels.cache.get(process.env.PUNUSHMENT_LOG_CHANNEL_ID).send({
       embeds: [
         {
           color: 0xf04a47,

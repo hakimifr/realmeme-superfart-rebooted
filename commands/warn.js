@@ -126,7 +126,7 @@ module.exports = {
       .catch((error) => {
         console.error(`Could not send DM to ${message.author.tag}.\n`, error);
       });
-    await client.channels.cache.get("1001166932407496754").send({
+    await client.channels.cache.get(process.env.PUNUSHMENT_LOG_CHANNEL_ID).send({
       embeds: [
         {
           color: 0xf04a47,
