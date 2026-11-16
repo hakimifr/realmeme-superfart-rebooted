@@ -119,34 +119,57 @@ module.exports = {
     try {
       const messageParts = [];
 
+      // User question
+      if (question) {
+        messageParts.push({
+          text: `User prompt (user id: ${message.author}): ${question}`,
+        });
+      }
+
+      let referencedMessage;
       // Referenced message context
       if (message.reference?.messageId) {
-        try {
-          const referencedMessage = await message.channel.messages.fetch(
-            message.reference.messageId,
-          );
-
-          if (referencedMessage.content) {
-            const cleanRefContent = removeBotMention(
-              referencedMessage.content,
-              botId,
+        while (true) {
+          try {
+            referencedMessage = message.channel.messages.cache.get(
+              message.reference.messageId,
             );
+            if (!referencedMessage) {
+              referencedMessage = await message.channel.messages.fetch(
+                message.reference.messageId,
+              );
+              console.debug("ai(reply traverser): reply traversal cache miss");
+            } else
+              console.debug("ai(reply traverser): reply traversal cache hit");
 
-            if (cleanRefContent) {
-              messageParts.push({
-                text: `Context (The message you are replying to):\n"${cleanRefContent}"\n\n---`,
-              });
+            if (referencedMessage.content) {
+              const cleanRefContent = removeBotMention(
+                referencedMessage.content,
+                botId,
+              );
+
+              if (cleanRefContent) {
+                messageParts.unshift({
+                  text: `Context (reply chain, chronologically; user id: ${referencedMessage.author}):\n"${cleanRefContent}"\n\n---`,
+                });
+              }
             }
+            if (referencedMessage.reference?.messageId)
+              message = referencedMessage;
+            else {
+              console.debug("ai(reply traverser): reply traversal ends");
+              break;
+            }
+          } catch (error) {
+            console.error("Failed to fetch referenced message:", error);
+            break;
           }
-        } catch (error) {
-          console.error("Failed to fetch referenced message:", error);
         }
       }
 
-      // User question
-      if (question) {
-        messageParts.push({ text: question });
-      }
+      console.debug(
+        `ai(reply traverser): final messageParts: ${JSON.stringify(messageParts, null, 2)}`,
+      );
 
       // Image attachments
       for (const [index, attachment] of [
@@ -171,7 +194,9 @@ module.exports = {
           },
         ],
         config: {
-          systemInstruction,
+          systemInstruction:
+            systemInstruction +
+            `\nYour ID is '${message.client.user.id}'. This will be useful later to identify your own message in a reply chain.`,
           tools: [{ googleSearch: {} }],
           maxOutputTokens: 3600,
           thinkingConfig: {
